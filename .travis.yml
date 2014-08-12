@@ -7,7 +7,6 @@ virtualenv:
 before_install:
   - sudo apt-get install -qq python-numpy python-scipy
 install: 
-  - pip install .
 #  - python setup.py dev
 # run tests
 script: nosetests
