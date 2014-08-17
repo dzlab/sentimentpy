@@ -5,18 +5,20 @@ import logging
 
 class Comment:
     """a class representation of a comment"""
-    message = None
-    created_time = None
-
     def __init__(self):
-        return
-      
+        self.id = None
+        self.user_id = None
+        self.user_name = None
+        self.message = None
+        self.created_time = None
+        self.like_count = 0
+
 
 class Reader:
     """a reader helper for reading comments from a file"""
     logger = logging.getLogger('Reader')
    
-    comments_file = None
+    #comments_file = None
 
     def __init__(self, filename):
         self.comments_file = open(filename, 'r')
@@ -37,18 +39,34 @@ class Reader:
         self._consume(comment, self.comments_file.readline())
         return comment
 
-    def _consume(self, comment, line):
-        if line.startswith("message:	"):
-            comment.message = line[len("message:	")+1:len(line)-2]
+    @staticmethod
+    def _consume(comment, line):
+        """consumes a line to update the corresponding comment information
+        comment -- the comment object to update its information
+        line -- the line to be parsed
+        :rtype : object
+        """
+        if line.startswith("id:	"):
+            comment.id = line[len("id:	"):len(line)]
+        elif line.startswith("from:	"):
+            blocks = line[len("from:	")+1:len(line)-1].split(',')
+            comment.user_name = blocks[0]
+            comment.user_id = blocks[1].strip('\t').split('\t')[1]
+        elif line.startswith("message:	"):
+            comment.message = line[len("message:	")+1:len(line)-1]
         elif line.startswith("created_time:	"):
             string_time = line[len("created_time:	"):len(line)]
             comment.created_time = parser.parse(string_time)
+        elif line.startswith("like_count:	"):
+            comment.like_count = int(line[len("like_count:	"):len(line)])
+        else:
+            Reader.logger.warn("Unrecognized information in: %s", line)
 
 
 class Writer:
     """a writer helper"""
     COMMENTS_FILE = '%s/../output/' % os.path.dirname(os.path.realpath(__file__))
-    output = None
+    #output = None
 
     def __init__(self, filename=None):
         if not filename:
@@ -71,12 +89,13 @@ class Writer:
 class BufferedWriter(Writer):
     """a writer helper that uses a buffer to accumulate lines before writer to disk"""
     COMMENTS_FILE = '%s/../output/' % os.path.dirname(os.path.realpath(__file__))
-    buffer = ''
+    #buffer = ''
     filename = 'data.tsv'
 
     def __init__(self, filename=None):
         if filename:
             self.filename = filename
+        self.buffer = ''
 
     def header(self, line):
         self.append(line)
