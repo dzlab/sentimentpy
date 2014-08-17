@@ -42,7 +42,7 @@ class LengthAnalyzer(Analyzer):
                 self.avg_len_mat[d][h] = round(avg_val)
 
         # writing the result to data.tsv
-        writer = Writer()
+        writer = BufferedWriter()
         writer.header('day' + '\t' + 'hour' + '\t' + 'value')
         for d in range(7):
             for h in range(24):
