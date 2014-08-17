@@ -2,67 +2,92 @@ import os
 from dateutil import parser
 import logging
 
-# a class representation of a comment
+
 class Comment:
-   message = None
-   created_time = None
+    """a class representation of a comment"""
+    message = None
+    created_time = None
 
-   #def __init__(self):
+    def __init__(self):
+        return
       
-# a reader helper for reading comments from a file
+
 class Reader:
-   logger = logging.getLogger('Reader')
-   FILENAME = '6815841748_10152075477696749.txt'
-   COMMENTS_FILE = '%s/../data/%s' % (os.path.dirname(os.path.realpath(__file__)), FILENAME)
-
-   comments_file = None
-
-   def __init__(self):   
-      self.comments_file = open(Reader.COMMENTS_FILE, 'r')
-
-   def close(self):
-      self.comments_file.close()
-
-   def next(self):
-      line = self.comments_file.readline()
-      if not line:
-         self.logger.debug('No information found on current line %s', line)
-         return None
-      comment = Comment()
-      self._consume(comment, self.comments_file.readline())
-      self._consume(comment, self.comments_file.readline())
-      self._consume(comment, self.comments_file.readline())
-      self._consume(comment, self.comments_file.readline())
-      self._consume(comment, self.comments_file.readline())
-      self.logger.debug('Parsed %s', comment)
-      return comment
-
-   def _consume(self, comment, line):
-      if line.startswith("message:	"):
-         self.logger.debug('Consuming message from line \n %s', line)
-         comment.message = line[len("message:	")+1:len(line)-2]
-      elif line.startswith("created_time:	"):
-         self.logger.debug('Consuming creation date from line \n %s', line)
-         string_time = line[len("created_time:	"):len(line)]
-         comment.created_time = parser.parse(string_time)
-
-# a writer helper
-class Writer:
-   COMMENTS_FILE = '%s/../output/data.tsv' % os.path.dirname(os.path.realpath(__file__))
-   output = None
-
-   def __init__(self, filename=None):
-      if not filename:
-         filename = Writer.COMMENTS_FILE
-      self.output = open(filename, 'w')
-
-   def header(self, line):
-      self.append(line)
-
-   def append(self, line):
-      self.output.write(line + '\n')
+    """a reader helper for reading comments from a file"""
+    logger = logging.getLogger('Reader')
    
-   def close(self):
-      self.output.close()
+    comments_file = None
+
+    def __init__(self, filename):
+        self.comments_file = open(filename, 'r')
+
+    def close(self):
+        self.comments_file.close()
+
+    def next(self):
+        line = self.comments_file.readline()
+        if not line:
+            self.logger.debug('Finished reading from input file')
+            return None
+        comment = Comment()
+        self._consume(comment, self.comments_file.readline())
+        self._consume(comment, self.comments_file.readline())
+        self._consume(comment, self.comments_file.readline())
+        self._consume(comment, self.comments_file.readline())
+        self._consume(comment, self.comments_file.readline())
+        return comment
+
+    def _consume(self, comment, line):
+        if line.startswith("message:	"):
+            comment.message = line[len("message:	")+1:len(line)-2]
+        elif line.startswith("created_time:	"):
+            string_time = line[len("created_time:	"):len(line)]
+            comment.created_time = parser.parse(string_time)
 
 
+class Writer:
+    """a writer helper"""
+    COMMENTS_FILE = '%s/../output/' % os.path.dirname(os.path.realpath(__file__))
+    output = None
+
+    def __init__(self, filename=None):
+        if not filename:
+            filename = 'data.tsv'
+        self.output = open(Writer.COMMENTS_FILE+filename, 'wb')
+
+    def header(self, line):
+        self.append(line)
+
+    def append(self, line):
+        self.output.write(line + '\n')
+
+    def footer(self, line):
+        self.append(line)
+
+    def close(self):
+        self.output.close()
+
+
+class BufferedWriter(Writer):
+    """a writer helper that uses a buffer to accumulate lines before writer to disk"""
+    COMMENTS_FILE = '%s/../output/' % os.path.dirname(os.path.realpath(__file__))
+    buffer = ''
+    filename = 'data.tsv'
+
+    def __init__(self, filename=None):
+        if filename:
+            self.filename = filename
+
+    def header(self, line):
+        self.append(line)
+
+    def append(self, line):
+        self.buffer += line + '\n'
+
+    def footer(self, line):
+        self.append(line)
+
+    def close(self):
+        self.output = open(Writer.COMMENTS_FILE + self.filename, 'wb')
+        self.output.write(self.buffer)
+        self.output.close()
