@@ -6,7 +6,8 @@ virtualenv:
 # install dependencies
 before_install:
   - sudo apt-get install -qq python-numpy python-scipy
-  # intall the 'guess language' module 
+  - sudo pip install python-dateutil
+  # intall the 'guess language' module
   - sudo pip install -e 'git://github.com/dsc/guess-language.git#egg=guess-language'
 install: 
   # - python setup.py dev
