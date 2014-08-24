@@ -9,7 +9,7 @@ before_install:
   - sudo pip install python-dateutil
   # intall the 'guess language' module
   - sudo pip install pyenchant
-  - sudo apt-get install hunspell-en-us hunspell-ru hunspell-de hunspell-fr hunspell-es
+  - sudo apt-get install hunspell-en-us hunspell-ru hunspell-de-de hunspell-fr hunspell-eu-es
   - sudo pip install --pre guess_language-spirit
 install: 
   # - python setup.py dev
