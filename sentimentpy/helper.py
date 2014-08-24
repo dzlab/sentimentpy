@@ -1,7 +1,7 @@
 import os
-from dateutil import parser
 import logging
-
+from logging.handlers import RotatingFileHandler
+from time import time
 
 class Comment:
     """a class representation of a comment"""
@@ -14,99 +14,41 @@ class Comment:
         self.like_count = 0
 
 
-class Reader:
-    """a reader helper for reading comments from a file"""
-    logger = logging.getLogger('Reader')
-   
-    #comments_file = None
+class WatchTime:
+    def __init__(self):
+        self.start_time = 0
+        self.stop_time = 0
+        self.total_time = 0
 
-    def __init__(self, filename):
-        self.comments_file = open(filename, 'r')
+    def start(self):
+        self.start_time = time()
+        self.stop_time = self.start_time
 
-    def close(self):
-        self.comments_file.close()
+    def stop(self):
+        self.stop_time = time()
+        self.total_time += (self.stop_time - self.start_time)
 
-    def next(self):
-        line = self.comments_file.readline()
-        if not line:
-            self.logger.debug('Finished reading from input file')
-            return None
-        comment = Comment()
-        self._consume(comment, self.comments_file.readline())
-        self._consume(comment, self.comments_file.readline())
-        self._consume(comment, self.comments_file.readline())
-        self._consume(comment, self.comments_file.readline())
-        self._consume(comment, self.comments_file.readline())
-        return comment
+    def elapsed(self):
+        return self.stop_time - self.start_time
 
-    @staticmethod
-    def _consume(comment, line):
-        """consumes a line to update the corresponding comment information
-        comment -- the comment object to update its information
-        line -- the line to be parsed
-        :rtype : object
-        """
-        if line.startswith("id:	"):
-            comment.id = line[len("id:	"):len(line)]
-        elif line.startswith("from:	"):
-            blocks = line[len("from:	")+1:len(line)-1].split(',')
-            comment.user_name = blocks[0]
-            comment.user_id = blocks[1].strip('\t').split('\t')[1]
-        elif line.startswith("message:	"):
-            comment.message = line[len("message:	")+1:len(line)-1]
-        elif line.startswith("created_time:	"):
-            string_time = line[len("created_time:	"):len(line)]
-            comment.created_time = parser.parse(string_time)
-        elif line.startswith("like_count:	"):
-            comment.like_count = int(line[len("like_count:	"):len(line)])
-        else:
-            Reader.logger.warn("Unrecognized information in: %s", line)
+    def total(self):
+        return self.total_time
 
+def get_logger():
+    my_logger = logging.getLogger()
+    #logging.basicConfig(level=logging.DEBUG)
+    my_logger.setLevel(logging.DEBUG)
+    formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(name)s - %(message)s')
+    # create a handler for storing logs on disk
+    logs_file = '%s/../output/sentimentpy.log' % os.path.dirname(os.path.realpath(__file__))
+    file_handler = RotatingFileHandler(logs_file, 'a', 1000000, 1)
+    file_handler.setLevel(logging.DEBUG)
+    file_handler.setFormatter(formatter)
+    my_logger.addHandler(file_handler)
+    # create a handler for forwarding logs to console
+    stream_handler = logging.StreamHandler()
+    stream_handler.setLevel(logging.DEBUG)
+    stream_handler.setFormatter(formatter)
+    my_logger.addHandler(stream_handler)
+    return my_logger
 
-class Writer:
-    """a writer helper"""
-    COMMENTS_FILE = '%s/../output/' % os.path.dirname(os.path.realpath(__file__))
-    #output = None
-
-    def __init__(self, filename=None):
-        if not filename:
-            filename = 'data.tsv'
-        self.output = open(Writer.COMMENTS_FILE+filename, 'wb')
-
-    def header(self, line):
-        self.append(line)
-
-    def append(self, line):
-        self.output.write(line + '\n')
-
-    def footer(self, line):
-        self.append(line)
-
-    def close(self):
-        self.output.close()
-
-
-class BufferedWriter(Writer):
-    """a writer helper that uses a buffer to accumulate lines before writer to disk"""
-    COMMENTS_FILE = '%s/../output/' % os.path.dirname(os.path.realpath(__file__))
-    #buffer = ''
-    filename = 'data.tsv'
-
-    def __init__(self, filename=None):
-        if filename:
-            self.filename = filename
-        self.buffer = ''
-
-    def header(self, line):
-        self.append(line)
-
-    def append(self, line):
-        self.buffer += line + '\n'
-
-    def footer(self, line):
-        self.append(line)
-
-    def close(self):
-        self.output = open(Writer.COMMENTS_FILE + self.filename, 'wb')
-        self.output.write(self.buffer)
-        self.output.close()

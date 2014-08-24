@@ -1,4 +1,4 @@
-from sentimentpy.helper import *
+from sentimentpy.io.writer import BufferedWriter
 from analyzer import *
 from time import time
 import logging
@@ -26,7 +26,7 @@ class LengthAnalyzer(Analyzer):
         # calculating comment's lengths
         day = comment.created_time.weekday()
         hour = comment.created_time.hour
-        value = len(comment.message)
+        value = len(comment.message.strip("'"))
         self.len_mat[day][hour] += value
         self.freq_mat[day][hour] += 1
 
