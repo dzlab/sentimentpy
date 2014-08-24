@@ -1,13 +1,14 @@
 __author__ = 'dzlab'
 
 from unittest import TestCase
-from sentimentpy.helper import Reader, Comment
+from sentimentpy.helper import Comment
+from sentimentpy.io.reader import Reader
 from nose.tools import *
 
 
 class ReaderTest(TestCase):
 
-    def it_should_parse_comment_test(self):
+    def it_should_consume_comment_test(self):
         comment = Comment()
         line = "id:	10152075477696749_22523804"
         Reader._consume(comment, line)
@@ -23,5 +24,5 @@ class ReaderTest(TestCase):
         eq_(comment.id, "10152075477696749_22523804")
         eq_(comment.user_id, "691492767528100")
         eq_(comment.user_name, "I fucking LOVE Chicago")
-        eq_(comment.message, "Good job Mr. President!")
+        eq_(comment.message, u"Good job Mr. President!")
         eq_(comment.like_count, 3)
