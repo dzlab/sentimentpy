@@ -29,7 +29,7 @@ class UserTest(TestCase):
         comment.user_name = "user2"
         comment.message = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec vulputate magna metus, sit amet pharetra eros volutpat vel. Fusce id. "
         analyzer.analyze(comment)
-        eq_(analyzer.texts_by_id["0000000000"], "lorem ipsum dolor sit amet consectetur adipisc elit donec vulput magna metu sit amet pharetra ero volutpat vel fusc id")
+        eq_(analyzer.texts_by_id["0000000000"], {u'la': "lorem ipsum dolor sit amet consectetur adipisc elit donec vulput magna metu sit amet pharetra ero volutpat vel fusc id"})
         eq_(len(analyzer.names_by_id), 2)
         eq_(len(analyzer.texts_by_id), 2)
 
