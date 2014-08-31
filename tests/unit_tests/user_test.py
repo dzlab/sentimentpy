@@ -21,7 +21,7 @@ class UserTest(TestCase):
         #trying with a second message from same user
         comment.message = "world!"
         analyzer.analyze(comment)
-        eq_(analyzer.texts_by_id["0123456789"], "hello world")
+        eq_(analyzer.texts_by_id["0123456789"], {u'UNKNOWN': 'hello world'})
         eq_(len(analyzer.names_by_id), 1)
         eq_(len(analyzer.texts_by_id), 1)
         #trying with a longer message
