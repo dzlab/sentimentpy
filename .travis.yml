@@ -12,6 +12,9 @@ before_install:
   - sudo apt-get install hunspell-en-us hunspell-ru hunspell-de-de hunspell-fr hunspell-eu-es
   - sudo pip install --pre guess_language-spirit
 install: 
+  - pip install coveralls
   # - python setup.py dev
 # run tests
-script: nosetests
+script: nosetests --with-coverage --cover-package=sentimentpy
+
+after_success: coveralls
