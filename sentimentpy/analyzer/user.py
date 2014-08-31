@@ -90,7 +90,7 @@ class UserAnalyzer(Analyzer):
     def update_distance_matrix(self, ui, uj, lang, dist):
         """Update cells (ui, lang, uj) and (uj, lang, ui) of the distance matrix with the given distance"""
         if not ui or not uj or not lang:
-            UserAnalyzer.logger.debug('Updating distance matrix with a non valid parameter ui=%s uj=%s lang=%s' % (ui, uj, lang))
+            UserAnalyzer.logger.info('Updating distance matrix with a non valid parameter ui=%s uj=%s lang=%s' % (ui, uj, lang))
             return
         if ui not in self.dist_matrix:
             self.dist_matrix[ui] = {}

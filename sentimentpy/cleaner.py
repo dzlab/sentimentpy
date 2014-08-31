@@ -36,7 +36,7 @@ class Cleaner:
         message = self.normalize(message)
         message = self.replace_special_characters(message)
         message = self.remove_punctuations(message)
-        words = message.split()
+        words = self.split(message)
         words = self.remove_meaningless_words(words)
         words = self.tokenize(words)
         words = self.remove_stop_words(words)
@@ -79,8 +79,55 @@ class Cleaner:
     def remove_meaningless_words(self, words):
         return [word for word in words if Cleaner.WORD.match(word)]
 
+    def split(self, message):
+        return message.split()
+
     def tokenize(self, words):
         """"""
         self.stemmer = PorterStemmer()
         return [self.stemmer.stem(word, 0, len(word)-1) for word in words]
 
+
+class CleanerComposer:
+    def __init__(self):
+        self.cleaner = Cleaner()
+        self.composition = CleanerComposer.ident
+
+    @staticmethod
+    def ident(x):
+        return x
+
+    @staticmethod
+    def compose(f, g):
+        return lambda x: f(g(x))
+
+    def normalize(self):
+        self.composition = CleanerComposer.compose(self.cleaner.normalize, self.composition)
+        return self
+
+    def replace_special_characters(self):
+        self.composition = CleanerComposer.compose(self.cleaner.replace_special_characters, self.composition)
+        return self
+
+    def remove_punctuations(self):
+        self.composition = CleanerComposer.compose(self.cleaner.remove_punctuations, self.composition)
+        return self
+
+    def split(self):
+        self.composition = CleanerComposer.compose(self.cleaner.split, self.composition)
+        return self
+
+    def remove_meaningless_words(self):
+        self.composition = CleanerComposer.compose(self.cleaner.remove_meaningless_words, self.composition)
+        return self
+
+    def tokenize(self):
+        self.composition = CleanerComposer.compose(self.cleaner.tokenize, self.composition)
+        return self
+
+    def remove_stop_words(self):
+        self.composition = CleanerComposer.compose(self.cleaner.remove_stop_words, self.composition)
+        return self
+
+    def clean(self, message):
+        return self.composition(message)

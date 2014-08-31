@@ -1,6 +1,7 @@
 from analyzer.length import LengthAnalyzer
 from analyzer.language import LanguageAnalyzer
 from analyzer.user import UserAnalyzer
+from analyzer.sentiment import SentimentAnalyzer
 from helper import *
 from io.reader import *
 
@@ -17,7 +18,8 @@ if __name__ == '__main__':
     analyzers = [ ]
     #analyzers.append(LengthAnalyzer())
     #analyzers.append(LanguageAnalyzer())
-    analyzers.append(UserAnalyzer())
+    #analyzers.append(UserAnalyzer())
+    analyzers.append(SentimentAnalyzer())
     reader = Reader(filename=COMMENTS_FILE)
     while True:
         comment = reader.next()
