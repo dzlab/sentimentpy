@@ -11,7 +11,7 @@ class UserTest(TestCase):
     def test_identifying_languages(self):
         analyzer = LanguageAnalyzer()
         comment = Comment()
-        comment.message = "hello world"
+        comment.message = "hello, the world is mine"
         analyzer.analyze(comment)
         eq_(len(analyzer.languages), 1)
-        eq_(u'en' in analyzer.languages, True)
+        eq_('en' in analyzer.languages, True)
