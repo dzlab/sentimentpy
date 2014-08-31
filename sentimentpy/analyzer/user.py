@@ -3,12 +3,13 @@ from guess_language.guess_language import distance
 __author__ = 'dzlab'
 
 from sentimentpy.cleaner import Cleaner
-from sentimentpy.io.writer import BufferedWriter
+from sentimentpy.io.writer import *
 from sentimentpy.utils.strings import  StringUtils
 from sentimentpy.helper import WatchTime
 from guess_language import guess_language
 from analyzer import *
 import logging
+import json
 
 
 class UserAnalyzer(Analyzer):
@@ -105,7 +106,46 @@ class UserAnalyzer(Analyzer):
         self.dist_matrix[uj][lang][ui] = dist
 
     def write_to_disk(self):
+        self.write_graph_to_disk()
+        #self.write_texts_to_disk()
+
+    def write_graph_to_disk(self):
+        """Write a Force Layout graph for english texts"""
+        UserAnalyzer.logger.debug("Writing graph data to disk")
+        graph = {"nodes": [], "links": []}
+        # write nodes representing users and languages
+        languages = []
+        pos_by_name = {}
+        pos = 0
+        for uid in self.names_by_id:
+            node = {"name": self.names_by_id[uid], "group": 0}
+            graph["nodes"].append(node)
+            pos_by_name[node["name"]] = pos
+            pos += 1
+            for lang in self.texts_by_id[uid]:
+                if lang in languages:
+                    continue
+                languages.append(lang)
+                node = {"name": lang, "group": 1}
+                graph["nodes"].append(node)
+                pos_by_name[node["name"]] = pos
+                pos += 1
+
+        # write links between users and languages
+        for uid in self.texts_by_id:
+            for lang in self.texts_by_id[uid]:
+                link = {"source": pos_by_name[self.names_by_id[uid]], "target": pos_by_name[lang]}
+                graph["links"].append(link)
+        #TODO write links between users based on distances
+
+        graph_string = json.dumps(graph)
+        writer = Writer(filename='graph.json')
+        writer.append(graph_string)
+        writer.close()
+
+    def write_texts_to_disk(self):
         """Write the generated data into a file"""
+        UserAnalyzer.logger.debug("Writing texts data to disk")
         writer = BufferedWriter(filename='messages.csv')
         writer.header('user_id, user_name, texts')
         for uid in self.texts_by_id:
