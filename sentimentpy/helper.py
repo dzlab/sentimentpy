@@ -6,16 +6,24 @@ from time import time
 class Comment:
     """a class representation of a comment"""
     def __init__(self):
+        # original comment fields
         self.id = None
         self.user_id = None
         self.user_name = None
         self.message = None
         self.created_time = None
         self.like_count = 0
+        # analysis fields
+        self.language = None
 
 
 class WatchTime:
     def __init__(self):
+        self.start_time = 0
+        self.stop_time = 0
+        self.total_time = 0
+
+    def reset(self):
         self.start_time = 0
         self.stop_time = 0
         self.total_time = 0

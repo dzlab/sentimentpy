@@ -2,6 +2,7 @@ __author__ = 'dzlab'
 
 from analyzer import *
 from sentimentpy.io.writer import BufferedWriter
+from sentimentpy.helper import WatchTime
 from guess_language import guess_language
 from time import time
 import logging
@@ -9,24 +10,28 @@ import logging
 
 class LanguageAnalyzer(Analyzer):
     logger = logging.getLogger('LanguageAnalyzer')
-    languages = {}
 
     def __init__(self):
-        return
+        self.languages = {}
+        self.watch = WatchTime()
 
     def analyze(self, comment):
-        #start_time = time()
+        self.watch.start()
         language = guess_language(comment.message.strip("'"))
         if language == 'UNKNOWN':
             self.logger.debug("Failed to guess the language for: %s", comment.message)
+        comment.language = language
         if not language in self.languages:
             self.languages[language] = 0
         self.languages[language] += 1
-        #end_time = time()
+        self.watch.stop()
         #self.logger.debug("Comment's language guessed as %s in %s seconds", language, str(end_time - start_time))
 
     def finalize(self):
-        start_time = time()
+        self.logger.info('Analyzing the comments took %s seconds' % str(self.watch.total()))
+        self.watch.reset()
+        # start a new watch
+        self.watch.start()
         output = BufferedWriter(filename='piechart.json')
         output.header('var labels = [')
         first = True
@@ -40,6 +45,6 @@ class LanguageAnalyzer(Analyzer):
             output.append(line)
         output.footer(']')
         output.close()
-        end_time = time()
-        self.logger.info('Finalization took %s seconds' % str(end_time - start_time))
+        self.watch.stop()
+        self.logger.info('Finalization took %s seconds' % str(self.watch.total()))
 

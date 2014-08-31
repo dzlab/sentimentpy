@@ -16,7 +16,7 @@ if __name__ == '__main__':
     watch.start()
     analyzers = [ ]
     #analyzers.append(LengthAnalyzer())
-    #analyzers.append(LanguageAnalyzer())
+    analyzers.append(LanguageAnalyzer())
     analyzers.append(UserAnalyzer())
     reader = Reader(filename=COMMENTS_FILE)
     while True:

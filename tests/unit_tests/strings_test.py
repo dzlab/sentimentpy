@@ -12,8 +12,10 @@ class StringUtilsTest(TestCase):
         eq_(word_freq, {})
 
     def test_word_frequency_one_occurrence(self):
+        word_freq = StringUtils.word_frequency('lorem')
+        eq_(word_freq, {'lorem': 1}, "A phrase of one word should have a frequency 1")
         word_freq = StringUtils.word_frequency('Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas sapien. ')
-        eq_(word_freq, {'Lorem':0.1, 'ipsum':0.1, 'dolor':0.1, 'sit':0.1, 'amet':0.1, 'consectetur':0.1, 'adipiscing':0.1, 'elit':0.1, 'Maecenas':0.1, 'sapien':0.1})
+        eq_(word_freq, {'Lorem': 0.1, 'ipsum': 0.1, 'dolor': 0.1, 'sit': 0.1, 'amet': 0.1, 'consectetur': 0.1, 'adipiscing': 0.1, 'elit': 0.1, 'Maecenas': 0.1, 'sapien': 0.1})
 
     def test_word_frequency_multi_occurrence(self):
         word_freq = StringUtils.word_frequency("it's not what you look at that matters, it's what you see")
