@@ -14,4 +14,4 @@ class UserTest(TestCase):
         comment.message = "hello world"
         analyzer.analyze(comment)
         eq_(len(analyzer.languages), 1)
-        eq_('en' in analyzer.languages, True)
+        eq_(u'en' in analyzer.languages, True)
