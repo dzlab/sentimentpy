@@ -27,7 +27,7 @@ class UserAnalysisTest(TestCase):
             analyzer.analyze(comment)
         # check how is cleaned the first message
         eq_(analyzer.names_by_id["01"], "u1")
-        eq_(analyzer.texts_by_id["01"], "world")
+        eq_(analyzer.texts_by_id["01"], {u'UNKNOWN': 'world'})
         # check how is cleaned the first message
         eq_(analyzer.names_by_id["02"], "u2")
-        eq_(analyzer.texts_by_id["02"], "advanc addit absolut mai receiv repli throw delight consist newspap unfeel neglect size hard mr fond ar")
+        eq_(analyzer.texts_by_id["02"], {u'en': "advanc addit absolut mai receiv repli throw delight consist newspap unfeel neglect size hard mr fond ar"})

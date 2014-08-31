@@ -9,7 +9,7 @@ from cleaner_test import CleanerTest
 
 class UserTest(TestCase):
 
-    def it_should_map_text_by_user_test(self):
+    def test_mapping_text_by_user(self):
         analyzer = UserAnalyzer(CleanerTest.create_cleaner_with_stopwords(''))
         comment = Comment()
         comment.user_id = "0123456789"
@@ -17,7 +17,7 @@ class UserTest(TestCase):
         comment.message = "hello"
         analyzer.analyze(comment)
         eq_(analyzer.names_by_id["0123456789"], "user1")
-        eq_(analyzer.texts_by_id["0123456789"], "hello")
+        eq_(analyzer.texts_by_id["0123456789"], {u'UNKOWN': 'hello'})
         #trying with a second message from same user
         comment.message = "world!"
         analyzer.analyze(comment)
@@ -64,12 +64,11 @@ class UserTest(TestCase):
         eq_(analyzer.dist_matrix, {}, "Distance matrix should be empty as there is only one text for a user/language pair")
 
         analyzer.texts_by_id['1'] = {}
-        analyzer.texts_by_id['1']['fr'] = "bonjour"
         analyzer.generate_distance_matrix()
         eq_(analyzer.dist_matrix, {}, "Distance matrix should be empty as there is no language match for the two users")
 
         analyzer.texts_by_id['2'] = {}
         analyzer.texts_by_id['2']['en'] = "hello, the world is mine"
         analyzer.generate_distance_matrix()
-        expected = {'0': {'en': {'2': 0.5477225575051662}}, '2': {'en': {'0': 0.5477225575051662}}}
+        expected = {'0': {'en': {'2': 0.5477225575051662}}, '2': {'en': {'0': 1.0}}}
         eq_(analyzer.dist_matrix, expected)#, "Distance matrix should be empty as there is no language match for the two users")
