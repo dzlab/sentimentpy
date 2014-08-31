@@ -1,5 +1,3 @@
-from guess_language.guess_language import distance
-
 __author__ = 'dzlab'
 
 from sentimentpy.cleaner import Cleaner
