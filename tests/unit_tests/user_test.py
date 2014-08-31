@@ -17,7 +17,7 @@ class UserTest(TestCase):
         comment.message = "hello"
         analyzer.analyze(comment)
         eq_(analyzer.names_by_id["0123456789"], "user1")
-        eq_(analyzer.texts_by_id["0123456789"], {u'UNKOWN': 'hello'})
+        eq_(analyzer.texts_by_id["0123456789"], {u'UNKNOWN': 'hello'})
         #trying with a second message from same user
         comment.message = "world!"
         analyzer.analyze(comment)
@@ -70,5 +70,5 @@ class UserTest(TestCase):
         analyzer.texts_by_id['2'] = {}
         analyzer.texts_by_id['2']['en'] = "hello, the world is mine"
         analyzer.generate_distance_matrix()
-        expected = {'0': {'en': {'2': 0.5477225575051662}}, '2': {'en': {'0': 1.0}}}
-        eq_(analyzer.dist_matrix, expected)#, "Distance matrix should be empty as there is no language match for the two users")
+        expected = {'0': {'en': {'2': 0.5477225575051662}}, '2': {'en': {'0': 0.5477225575051662}}}
+        eq_(analyzer.dist_matrix, expected, "Distance matrix should be empty as there is no language match for the two users")
