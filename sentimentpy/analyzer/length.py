@@ -1,8 +1,9 @@
-from sentimentpy.io.writer import BufferedWriter
-from analyzer import *
 from time import time
 import logging
+
 import numpy
+from sentimentpy.analyze import Analyzer
+from sentimentpy.io.writer import BufferedWriter
 
 
 class LengthAnalyzer(Analyzer):

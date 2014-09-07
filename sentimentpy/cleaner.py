@@ -8,7 +8,8 @@ import os
 import string
 import re
 import logging
-from porter_stemmer import PorterStemmer
+
+from sentimentpy.utils.porter_stemmer import PorterStemmer
 
 
 class Cleaner:

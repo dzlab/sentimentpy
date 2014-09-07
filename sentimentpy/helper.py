@@ -16,6 +16,15 @@ class Comment:
         # analysis fields
         self.language = None
 
+    def to_dict(self):
+        return {'id': self.id,
+                'user_id': self.user_id,
+                'user_name': self.user_name,
+                'message': self.message,
+                'created_time': self.created_time.isoformat(),
+                'like_count': self.like_count,
+                'language': self.language}
+
 
 class WatchTime:
     def __init__(self):

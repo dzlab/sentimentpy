@@ -1,13 +1,14 @@
 __author__ = 'dzlab'
 
+import logging
+import json
+
+from guess_language import guess_language
+from sentimentpy.analyze import Analyzer
 from sentimentpy.cleaner import Cleaner
 from sentimentpy.io.writer import *
 from sentimentpy.utils.strings import  StringUtils
 from sentimentpy.helper import WatchTime
-from guess_language import guess_language
-from analyzer import *
-import logging
-import json
 
 
 class UserAnalyzer(Analyzer):

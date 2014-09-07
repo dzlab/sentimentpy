@@ -1,7 +1,7 @@
 from __future__ import division
 __author__ = 'dzlab'
 
-from analyzer import *
+from sentimentpy.analyze import Analyzer
 from sentimentpy.cleaner import *
 from sentimentpy.helper import WatchTime
 from sentimentpy.io.writer import BufferedWriter
