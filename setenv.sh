@@ -12,7 +12,10 @@ pip install numpy
 sudo apt-get install libatlas-base-dev gfortran
 pip install scipy
 pip install python-dateutil
-#pip install ming
+
+echo "Installing python libraries for webapp"
+pip install Flask
+pip install flask-wtf
 
 echo "Installing language detection libraries"
 pip install pyenchant

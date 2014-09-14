@@ -6,7 +6,7 @@ import logging
 
 from optparse import OptionParser
 from sentimentpy.io.reader import Reader
-from sentimentpy.io.mongodb import MongoDb
+from sentimentpy.io.mongodb import MongoWorkerPool
 
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger('scan.py')
@@ -30,18 +30,15 @@ def scan(directory):
     return data_files
 
 
-def load(files):
-    db = MongoDb()
-    for data_file in files:
-        logger.debug("Parsing data from %s" % data_file)
-        reader = Reader(filename=data_file)
-        while True:
-            comment = reader.next()
-            if not comment:
-                break
-            db.analyze(comment)
-        reader.close()
-    db.finalize()
+def load(db, data_file):
+    logger.debug("Parsing data from %s" % data_file)
+    reader = Reader(filename=data_file)
+    while True:
+        comment = reader.next()
+        if not comment:
+            break
+        db.add_comment(comment)
+    reader.close()
 
 
 def handle_options():
@@ -73,5 +70,9 @@ def handle_options():
 
 if __name__ == '__main__':
     #files = handle_options()
+    pool = MongoWorkerPool(10)
     files = ["/home/dzlab/Work/sentimentpy/data/6815841748_10152075477696749.txt"]
-    load(files)
+    for f in files:
+        load(pool, f)
+    pool.wait_completion()
+    pool.close()

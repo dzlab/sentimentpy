@@ -1,0 +1,30 @@
+<!-- extend from base layout -->
+{% extends "base.html" %}
+
+{% block content %}
+    <table id="example" class="display" cellspacing="0" width="100%">
+        <thead>
+            <tr>
+                <th>user_name</th>
+                <th>created_at</th>
+                <th>message</th>
+            </tr>
+        </thead>
+        <tfoot>
+            <tr>
+                <th>user_name</th>
+                <th>created_time</th>
+                <th>message</th>
+            </tr>
+        </tfoot>
+        <tbody>
+            {% for comment in comments %}
+                <tr>
+                    <td>{{ comment.user_name }}</td>
+                    <td>{{ comment.created_time }}</td>
+                    <td>{{ comment.message }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
