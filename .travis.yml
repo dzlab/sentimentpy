@@ -10,7 +10,11 @@ before_install:
   # intall the 'guess language' module
   - sudo pip install pyenchant
   - sudo apt-get install hunspell-en-us hunspell-ru hunspell-de-de hunspell-fr hunspell-eu-es
-  - sudo pip install --pre guess_language-spirit
+  - pip install --pre guess_language-spirit
+  # intall flask
+  - pip install Flask
+  - pip install flask-wtf
+
 install: 
   - pip install coveralls
   # - python setup.py dev

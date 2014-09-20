@@ -1,10 +1,10 @@
 from __future__ import division
 __author__ = 'dzlab'
 
-from sentimentpy.analyze import Analyzer
-from sentimentpy.cleaner import *
-from sentimentpy.helper import WatchTime
-from sentimentpy.io.writer import BufferedWriter
+from core.analyze import Analyzer
+from core.cleaner import *
+from core.helper import WatchTime
+from core.inout.writer import BufferedWriter
 from guess_language import guess_language
 import logging
 import os

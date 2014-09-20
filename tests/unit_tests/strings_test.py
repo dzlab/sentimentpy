@@ -2,7 +2,7 @@ __author__ = 'dzlab'
 
 from unittest import TestCase
 from nose.tools import *
-from sentimentpy.utils.strings import StringUtils
+from core.utils.strings import StringUtils
 
 
 class StringUtilsTest(TestCase):

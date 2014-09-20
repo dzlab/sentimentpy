@@ -2,7 +2,7 @@ __author__ = 'dzlab'
 
 import os
 import logging
-from sentimentpy.helper import WatchTime
+from core.helper import WatchTime
 
 
 COMMENTS_FILE = '%s/../../output/' % os.path.dirname(os.path.realpath(__file__))

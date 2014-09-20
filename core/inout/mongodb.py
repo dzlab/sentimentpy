@@ -9,6 +9,7 @@ from pymongo.errors import ConnectionFailure
 
 DATABASE = "sentimentdb"
 
+
 class MongoDb:
     logger = logging.getLogger('MongoDb')
 
@@ -19,11 +20,12 @@ class MongoDb:
             MongoDb.logger.info("Could not connect to MongoDB: %s" % e)
             sys.exit(1)
         self.comments = self.connection.sentimentdb.comments
-        MongoDb.logger.debug("Successfully opened connection to the comments database")
+        MongoDb.logger.debug("Successfully opened connection to the comments '%s'" % DATABASE)
 
     def close(self):
         self.connection.close()
-        MongoDb.logger.debug("Successfully closed connection to database")
+        MongoDb.logger.debug("Successfully closed connection to '%s'" % DATABASE)
+
 
 class MongoWorker(Thread):
     """Thread executing inserts to mongodb from a given comments queue"""
@@ -36,10 +38,10 @@ class MongoWorker(Thread):
         try:
             self.connection = MongoClient(host="localhost", port=27017)
         except ConnectionFailure, e:
-            MongoWorker.logger.info("Could not connect to MongoDB: %s" % e)
+            MongoWorker.logger.info("Could not connect to MongoDB: '%s'" % DATABASE)
             sys.exit(1)
         self.comments_collection = self.connection.sentimentdb.comments
-        MongoWorker.logger.debug("Successfully opened connection to the comments database")
+        MongoWorker.logger.debug("%s successfully opened connection to the comments '%s'" % (self.name, DATABASE))
         self.start()
 
     def run(self):
@@ -50,12 +52,15 @@ class MongoWorker(Thread):
 
     def close(self):
         self.connection.close()
-        MongoWorker.logger.debug("Successfully closed connection to database")
+        MongoWorker.logger.debug("%s successfully closed connection to '%s'" % (self.name, DATABASE))
 
 
 class MongoWorkerPool:
     """Pool of connections to mongodb for a queue"""
+    logger = logging.getLogger('MongoWorkerPool')
+
     def __init__(self, size):
+        self.logger.debug("Initiating a pool of %s MongoWorker(s)" % size)
         self.comments = Queue(size)
         self.workers = []
         for _ in range(size):
@@ -71,5 +76,6 @@ class MongoWorkerPool:
         self.comments.join()
 
     def close(self):
+        self.logger.debug("Closing all workers in the pool")
         for worker in self.workers:
             worker.close()

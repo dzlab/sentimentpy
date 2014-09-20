@@ -4,11 +4,11 @@ import logging
 import json
 
 from guess_language import guess_language
-from sentimentpy.analyze import Analyzer
-from sentimentpy.cleaner import Cleaner
-from sentimentpy.io.writer import *
-from sentimentpy.utils.strings import  StringUtils
-from sentimentpy.helper import WatchTime
+from core.analyze import Analyzer
+from core.cleaner import Cleaner
+from core.inout.writer import *
+from core.utils.strings import  StringUtils
+from core.helper import WatchTime
 
 
 class UserAnalyzer(Analyzer):

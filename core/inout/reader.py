@@ -1,9 +1,10 @@
 __author__ = 'dzlab'
 
-from sentimentpy.helper import Comment, WatchTime
+from core.helper import Comment, WatchTime
 from dateutil import parser
 from ast import literal_eval
 import logging
+import traceback
 
 
 class Reader:
@@ -28,19 +29,27 @@ class Reader:
         line = self.comments_file.readline()
         if not line:
             self.watch.stop()
-            self.logger.debug('Finished reading from input file in %s seconds' % str(self.watch.total()))
+            self.logger.debug('Finished reading from % in %s seconds' % (self.comments_file.name, str(self.watch.total())))
             return None
         comment = Comment()
-        self.consume_(comment, self.comments_file.readline())
-        self.consume_(comment, self.comments_file.readline())
-        self.consume_(comment, self.comments_file.readline())
-        self.consume_(comment, self.comments_file.readline())
-        self.consume_(comment, self.comments_file.readline())
+        self.safely_consume(comment, self.comments_file.readline())
+        self.safely_consume(comment, self.comments_file.readline())
+        self.safely_consume(comment, self.comments_file.readline())
+        self.safely_consume(comment, self.comments_file.readline())
+        self.safely_consume(comment, self.comments_file.readline())
         self.watch.stop()
         return comment
 
     @staticmethod
-    def consume_(comment, line):
+    def safely_consume(comment, line):
+        try:
+            Reader.consume(comment, line)
+        except Exception, err:
+            Reader.logger.info("Failed to parse: %s caused by %s" % (line, err.message))
+            print traceback.print_exc()
+
+    @staticmethod
+    def consume(comment, line):
         """consumes a line to update the corresponding comment information
         :param comment -- the comment object to update its information
         :param line -- the line to be parsed
@@ -49,9 +58,16 @@ class Reader:
         if line.startswith("id:	"):
             comment.id = line[len("id:	"):len(line)]
         elif line.startswith("from:	"):
-            blocks = line[len("from:	"):len(line)].strip().replace('[', '').replace(']', '').split(',')
-            comment.user_name = blocks[0]
-            comment.user_id = blocks[1].strip('\t').split('\t')[1]
+            blocks = line[len("from:	"):len(line)].strip().replace('[', '').replace(']', '').rsplit(',', 1)
+            if blocks[0] and blocks[0] != '':
+                comment.user_name = blocks[0]
+            else:
+                Reader.logger.info("Empty user_name in: %s" % line)
+            blocks = blocks[1].strip('\t').split('\t')
+            if len(blocks) == 2:
+                comment.user_id = blocks[1]
+            else:
+                Reader.logger.info("Could not find user_id in: %s" % line)
         elif line.startswith("message:	"):
             message = line[len("message:	"):len(line)].strip()
             if not message.startswith("u'"):

@@ -2,8 +2,8 @@ __author__ = 'dzlab'
 
 from unittest import TestCase
 from nose.tools import *
-from sentimentpy.analyzer.user import UserAnalyzer
-from sentimentpy.helper import Comment
+from core.analyzer.user import UserAnalyzer
+from core.helper import Comment
 
 
 class UserAnalysisTest(TestCase):

@@ -3,7 +3,7 @@ __author__ = 'dzlab'
 from app import app
 from flask import render_template, flash, redirect
 
-from sentimentpy.io.mongodb import MongoDb
+from core.inout.mongodb import MongoDb
 
 
 @app.route("/")

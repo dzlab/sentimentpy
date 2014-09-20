@@ -1,7 +1,6 @@
-import os
-import logging
-from logging.handlers import RotatingFileHandler
+
 from time import time
+
 
 class Comment:
     """a class representation of a comment"""
@@ -50,22 +49,3 @@ class WatchTime:
 
     def total(self):
         return self.total_time
-
-def get_logger():
-    my_logger = logging.getLogger()
-    #logging.basicConfig(level=logging.DEBUG)
-    my_logger.setLevel(logging.DEBUG)
-    formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(name)s - %(message)s')
-    # create a handler for storing logs on disk
-    logs_file = '%s/../output/sentimentpy.log' % os.path.dirname(os.path.realpath(__file__))
-    file_handler = RotatingFileHandler(logs_file, 'a', 1000000, 1)
-    file_handler.setLevel(logging.DEBUG)
-    file_handler.setFormatter(formatter)
-    my_logger.addHandler(file_handler)
-    # create a handler for forwarding logs to console
-    stream_handler = logging.StreamHandler()
-    stream_handler.setLevel(logging.DEBUG)
-    stream_handler.setFormatter(formatter)
-    my_logger.addHandler(stream_handler)
-    return my_logger
-

@@ -9,7 +9,7 @@ import string
 import re
 import logging
 
-from sentimentpy.utils.porter_stemmer import PorterStemmer
+from core.utils.porter_stemmer import PorterStemmer
 
 
 class Cleaner:

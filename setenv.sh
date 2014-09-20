@@ -3,11 +3,13 @@
 
 echo "Installing python dev tools"
 sudo apt-get install python-pip python-dev build-essential
+sudo apt-get install python3 python3-pip
 sudo pip install virtualenv
 virtuanenv DEV
 source DEV/bin/activate
 
 echo "Installing python libraries in current virtualenv"
+pip install nose
 pip install numpy 
 sudo apt-get install libatlas-base-dev gfortran
 pip install scipy

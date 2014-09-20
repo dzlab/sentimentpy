@@ -1,7 +1,7 @@
 __author__ = 'dzlab'
 
 from unittest import TestCase
-from sentimentpy.cleaner import CleanerComposer
+from core.cleaner import CleanerComposer
 from nose.tools import *
 
 

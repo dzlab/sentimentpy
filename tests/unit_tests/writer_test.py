@@ -1,7 +1,7 @@
 __author__ = 'dzlab'
 
 from unittest import TestCase
-from sentimentpy.io.writer import BufferedWriter
+from core.inout.writer import BufferedWriter
 from nose.tools import *
 
 

@@ -3,9 +3,9 @@ __author__ = 'dzlab'
 import logging
 
 from guess_language import guess_language
-from sentimentpy.analyze import Analyzer
-from sentimentpy.io.writer import BufferedWriter
-from sentimentpy.helper import WatchTime
+from core.analyze import Analyzer
+from core.inout.writer import BufferedWriter
+from core.helper import WatchTime
 
 
 class LanguageAnalyzer(Analyzer):

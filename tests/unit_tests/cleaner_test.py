@@ -1,5 +1,5 @@
 from unittest import TestCase
-from sentimentpy.cleaner import Cleaner
+from core.cleaner import Cleaner
 from nose.tools import *
 
 
