@@ -1,6 +1,6 @@
 __author__ = 'dzlab'
 
-from app import app
+from webapp.app import app
 from flask import render_template, flash, redirect
 
 from core.inout.mongodb import MongoDb
