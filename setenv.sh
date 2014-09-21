@@ -15,6 +15,9 @@ sudo apt-get install libatlas-base-dev gfortran
 pip install scipy
 pip install python-dateutil
 
+echo "Installing python libraries for storage"
+pip install pymongo
+
 echo "Installing python libraries for webapp"
 pip install Flask
 pip install flask-wtf

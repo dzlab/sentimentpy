@@ -14,6 +14,8 @@ before_install:
   # intall flask
   - pip install Flask
   - pip install flask-wtf
+  # intall pymongo
+  - pip install pymongo
 
 install: 
   - pip install coveralls
