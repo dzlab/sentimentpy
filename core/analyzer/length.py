@@ -2,7 +2,7 @@ from time import time
 import logging
 
 import numpy
-from core.analyze import Analyzer
+from core.analyzer import Analyzer
 from core.inout.writer import BufferedWriter
 
 

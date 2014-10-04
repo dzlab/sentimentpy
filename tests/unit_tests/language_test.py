@@ -3,7 +3,7 @@ __author__ = 'dzlab'
 from unittest import TestCase
 from nose.tools import *
 from core.analyzer.language import LanguageAnalyzer
-from core.helper import Comment
+from core.model import Comment
 
 
 class UserTest(TestCase):

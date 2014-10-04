@@ -2,29 +2,6 @@
 from time import time
 
 
-class Comment:
-    """a class representation of a comment"""
-    def __init__(self):
-        # original comment fields
-        self.id = None
-        self.user_id = None
-        self.user_name = None
-        self.message = None
-        self.created_time = None
-        self.like_count = 0
-        # analysis fields
-        self.language = None
-
-    def to_dict(self):
-        return {'id': self.id,
-                'user_id': self.user_id,
-                'user_name': self.user_name,
-                'message': self.message,
-                'created_time': self.created_time.isoformat(),
-                'like_count': self.like_count,
-                'language': self.language}
-
-
 class WatchTime:
     def __init__(self):
         self.start_time = 0
@@ -49,3 +26,20 @@ class WatchTime:
 
     def total(self):
         return self.total_time
+
+
+def trace_calls(frame, event, arg):
+    if event != 'call':
+        return
+    co = frame.f_code
+    func_name = co.co_name
+    if func_name == 'write':
+        # Ignore write() calls from print statements
+        return
+    func_line_no = frame.f_lineno
+    func_filename = co.co_filename
+    caller = frame.f_back
+    caller_line_no = caller.f_lineno
+    caller_filename = caller.f_code.co_filename
+    print 'Call to %s on line %s of %s from line %s of %s' % (func_name, func_line_no, func_filename, caller_line_no, caller_filename)
+    return

@@ -3,7 +3,7 @@ __author__ = 'dzlab'
 import logging
 
 from guess_language import guess_language
-from core.analyze import Analyzer
+from core.analyzer import Analyzer
 from core.inout.writer import BufferedWriter
 from core.helper import WatchTime
 
@@ -20,7 +20,7 @@ class LanguageAnalyzer(Analyzer):
         language = guess_language(comment.message.strip("'"))
         if language == 'UNKNOWN':
             self.logger.debug("Failed to guess the language for: %s", comment.message)
-        comment.language = language
+        comment.set_language(language)
         if not language in self.languages:
             self.languages[language] = 0
         self.languages[language] += 1

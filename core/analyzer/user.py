@@ -4,7 +4,7 @@ import logging
 import json
 
 from guess_language import guess_language
-from core.analyze import Analyzer
+from core.analyzer import Analyzer
 from core.cleaner import Cleaner
 from core.inout.writer import *
 from core.utils.strings import  StringUtils
@@ -31,7 +31,7 @@ class UserAnalyzer(Analyzer):
             message = unicode(comment.message)
             return"""
         if not comment.language:
-            comment.language = guess_language(comment.message)
+            comment.set_language(guess_language(comment.message))
 
         # process the comment's message:
         # - concatenate the text of all comments of for a given user and a given text language

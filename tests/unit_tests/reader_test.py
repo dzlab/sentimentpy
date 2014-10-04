@@ -2,7 +2,7 @@
 __author__ = 'dzlab'
 
 from unittest import TestCase
-from core.helper import Comment
+from core.model import Comment
 from core.inout.reader import Reader
 from nose.tools import *
 

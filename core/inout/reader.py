@@ -1,6 +1,7 @@
 __author__ = 'dzlab'
 
-from core.helper import Comment, WatchTime
+from core.model import Comment
+from core.helper import WatchTime
 from dateutil import parser
 from ast import literal_eval
 import logging
@@ -13,12 +14,13 @@ class Reader:
 
     #comments_file = None
 
-    def __init__(self, comments_file=None, filename=None):
+    def __init__(self, comments_file=None, filename=None, parse=True):
         if comments_file:
             self.comments_file = comments_file
         elif filename:
             self.comments_file = open(filename, 'r')
         self.watch = WatchTime()
+        self.parse = parse
 
     def close(self):
         self.comments_file.close()
@@ -29,7 +31,7 @@ class Reader:
         line = self.comments_file.readline()
         if not line:
             self.watch.stop()
-            self.logger.debug('Finished reading from % in %s seconds' % (self.comments_file.name, str(self.watch.total())))
+            self.logger.debug('Finished reading from %s in %f seconds' % (self.comments_file.name, self.watch.total()))
             return None
         comment = Comment()
         self.safely_consume(comment, self.comments_file.readline())
@@ -40,16 +42,14 @@ class Reader:
         self.watch.stop()
         return comment
 
-    @staticmethod
-    def safely_consume(comment, line):
+    def safely_consume(self, comment, line):
         try:
-            Reader.consume(comment, line)
+            self.consume(comment, line)
         except Exception, err:
             Reader.logger.info("Failed to parse: %s caused by %s" % (line, err.message))
             print traceback.print_exc()
 
-    @staticmethod
-    def consume(comment, line):
+    def consume(self, comment, line):
         """consumes a line to update the corresponding comment information
         :param comment -- the comment object to update its information
         :param line -- the line to be parsed
@@ -76,7 +76,10 @@ class Reader:
                 comment.message = literal_eval(message)
         elif line.startswith("created_time:	"):
             string_time = line[len("created_time:	"):len(line)]
-            comment.created_time = parser.parse(string_time)
+            if self.parse:
+                comment.created_time = parser.parse(string_time)
+            else:
+                comment.created_time = string_time
         elif line.startswith("like_count:	"):
             comment.like_count = int(line[len("like_count:	"):len(line)])
         else:

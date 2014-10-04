@@ -1,7 +1,7 @@
 from __future__ import division
 __author__ = 'dzlab'
 
-from core.analyze import Analyzer
+from core.analyzer import Analyzer
 from core.cleaner import *
 from core.helper import WatchTime
 from core.inout.writer import BufferedWriter
@@ -12,6 +12,7 @@ import numpy
 
 
 class SentimentAnalyzer(Analyzer):
+    """Estimates the frequency of each sentiment score between -10 and +10 of all messages"""
     logger = logging.getLogger('SentimentAnalyzer')
     POSITIVE_FILE = '%s/../../data/%s' % (os.path.dirname(os.path.realpath(__file__)), 'positive.txt')
     NEGATIVE_FILE = '%s/../../data/%s' % (os.path.dirname(os.path.realpath(__file__)), 'negative.txt')
@@ -34,7 +35,7 @@ class SentimentAnalyzer(Analyzer):
     def analyze(self, comment):
         self.watch.start()
         if not comment.language:
-            comment.language = guess_language(comment.message)
+            comment.set_language(guess_language(comment.message))
         if not comment.language == 'en':
             return
         words = self.cleaner.clean(comment.message)
@@ -47,6 +48,8 @@ class SentimentAnalyzer(Analyzer):
                 negative_count += 1
         score = (positive_count - negative_count) / len(words)
         index = round(score * 10 + 10)
+        if index == len(self.scores):
+            index -= 1
         self.scores[index] += 1
         self.watch.stop()
 
