@@ -52,15 +52,17 @@ class SentimentAnalyzer(Analyzer):
         self.scores[index] += 1
         self.watch.stop()
 
-    def finalize(self):
+    def finalize(self, output=None, close=True):
         self.logger.info('Analyzing the comments took %s seconds' % str(self.watch.total()))
         self.watch.reset()
         # start a new watch
         self.watch.start()
-        writer = BufferedWriter(filename='data.tsv')
-        writer.header('range' + '\t' + 'frequency')
+        if not output:
+            output = BufferedWriter(filename='data.tsv')
+        output.header('range' + '\t' + 'frequency')
         for i in range(0, len(self.scores)):
-            writer.append(str(i-10) + '\t' + str(self.scores[i]))
-        writer.close()
+            output.append(str(i-10) + '\t' + str(self.scores[i]))
+        if close:
+            output.close()
         self.watch.stop()
         self.logger.info('Finalization took %s seconds' % str(self.watch.total()))

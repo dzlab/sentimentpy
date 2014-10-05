@@ -86,10 +86,10 @@ class OptionsHandler:
         watch.start()
         # create an analysis manager and register the analyzers
         analyzer = AnalyzerManager()
-        analyzer.register(LengthAnalyzer())
+        #analyzer.register(LengthAnalyzer())
         analyzer.register(LanguageAnalyzer())
-        analyzer.register(UserAnalyzer())
-        analyzer.register(SentimentAnalyzer())
+        #analyzer.register(UserAnalyzer())
+        #analyzer.register(SentimentAnalyzer())
         db = MongoDb()
         comments = db.comments.find()
         i = 0

@@ -26,24 +26,20 @@ class LanguageAnalyzer(Analyzer):
         self.watch.stop()
         #self.logger.debug("Comment's language guessed as %s in %s seconds", language, str(end_time - start_time))
 
-    def finalize(self):
+    def finalize(self, output=None, close=True):
         self.logger.info('Analyzing the comments took %s seconds' % str(self.watch.total()))
         self.watch.reset()
         # start a new watch
         self.watch.start()
-        output = BufferedWriter(filename='piechart.json')
+        if not output:
+            output = BufferedWriter(filename='piechart.json', file_format='json')
         output.header('var labels = [')
-        first = True
         for language in self.languages:
-            if first:
-                line = "  "
-                first = False
-            else:
-                line = "  ,"
-            line += "{ \"label\": \"%s\", \"value\": %s }" % (language, str(self.languages[language]))
-            output.append(line)
+            data = "{ \"label\": \"%s\", \"value\": %s }" % (language, str(self.languages[language]))
+            output.append(data)
         output.footer(']')
-        output.close()
+        if close:
+            output.close()
         self.watch.stop()
         self.logger.info('Finalization took %s seconds' % str(self.watch.total()))
 

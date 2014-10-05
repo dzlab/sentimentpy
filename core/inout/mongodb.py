@@ -11,6 +11,7 @@ DATABASE = "sentimentdb"
 
 
 class MongoDb:
+    """MongoDB client wrapper"""
     logger = logging.getLogger('MongoDb')
 
     def __init__(self):
@@ -19,6 +20,7 @@ class MongoDb:
         except ConnectionFailure, e:
             MongoDb.logger.info("Could not connect to MongoDB: %s" % e)
             sys.exit(1)
+        self.sentimentdb = self.connection.sentimentdb
         self.comments = self.connection.sentimentdb.comments
         MongoDb.logger.debug("Successfully opened connection to the comments '%s'" % DATABASE)
 

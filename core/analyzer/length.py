@@ -31,7 +31,7 @@ class LengthAnalyzer(Analyzer):
         self.len_mat[day][hour] += value
         self.freq_mat[day][hour] += 1
 
-    def finalize(self):
+    def finalize(self, output=None, close=True):
         # calculate average length for each (day, hour) peer
         start_time = time()
         for d in range(7):
@@ -43,12 +43,15 @@ class LengthAnalyzer(Analyzer):
                 self.avg_len_mat[d][h] = round(avg_val)
 
         # writing the result to data.tsv
-        writer = BufferedWriter()
-        writer.header('day' + '\t' + 'hour' + '\t' + 'value')
+        if not output:
+            output = BufferedWriter()
+        output.header('day' + '\t' + 'hour' + '\t' + 'value')
         for d in range(7):
             for h in range(24):
-                writer.append(str(d+1) + '\t' + str(h+1) + '\t' + str(self.avg_len_mat[d][h]))
+                data = str(d+1) + '\t' + str(h+1) + '\t' + str(self.avg_len_mat[d][h])
+                output.append(data)
       
-        writer.close()
+        if close:
+            output.close()
         end_time = time()
         self.logger.info('Finalization took %s seconds' % str(end_time - start_time))

@@ -45,7 +45,7 @@ class UserAnalyzer(Analyzer):
             self.texts_by_id[comment.user_id][comment.language] += ' ' + text
         self.watch.stop()
 
-    def finalize(self):
+    def finalize(self, output=None, close=True):
         self.logger.info('Analyzing the comments took %s seconds' % str(self.watch.total()))
         self.watch.reset()
         # start a new watch
