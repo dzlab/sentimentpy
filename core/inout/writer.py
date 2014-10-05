@@ -15,7 +15,7 @@ class Formatter:
 
     def format(self, data):
         if data is '':
-            return
+            return data
         formatted = data
         if self.file_format == 'csv':
             formatted += '\n'
