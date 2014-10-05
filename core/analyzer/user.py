@@ -22,6 +22,9 @@ class UserAnalyzer(Analyzer):
         self.dist_matrix = {}
         self.watch = WatchTime()
 
+    def name(self):
+        return 'user'
+
     def analyze(self, comment):
         self.watch.start()
         # ignore non english messages

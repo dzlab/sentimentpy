@@ -2,6 +2,7 @@
 import logging
 from Queue import Queue
 from threading import Thread, current_thread
+from core.inout.writer import MongodbWriter
 from core.utils.thread_pool import ThreadPool
 
 
@@ -23,15 +24,16 @@ class AnalyzerWorker(Thread):
             self.comments_queue.task_done()
             #self.logger.debug('%d comments remaining to process by %s' % (self.comments_queue.qsize(), self.analyzer))
 
-    def finalize(self):
-        self.analyzer.finalize()
+    def finalize(self, db=None):
+        self.analyzer.finalize(output=db, close=False)
         AnalyzerWorker.logger.debug("%s successfully finalized analyzer '%s'" % (self.name, self.analyzer))
 
 
 class AnalyzerManager:
     logger = logging.getLogger('AnalyzerManager')
 
-    def __init__(self, size=1000):
+    def __init__(self, size=1000, db=None):
+        self.db = db
         self.size = size
         self.workers = []
 
@@ -53,8 +55,9 @@ class AnalyzerManager:
     def finalize(self):
         self.logger.debug("Finalizing all analysis")
         for worker in self.workers:
+            output = MongodbWriter(self.db, worker.analyzer.name())
             worker.comments_queue.join()
-            worker.finalize()
+            worker.finalize(output)
 
     @staticmethod
     def execute(analyzer, comment):

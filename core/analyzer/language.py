@@ -14,6 +14,9 @@ class LanguageAnalyzer(Analyzer):
         self.languages = {}
         self.watch = WatchTime()
 
+    def name(self):
+        return 'language'
+
     def analyze(self, comment):
         self.watch.start()
         language = guess_language_thread_safe(comment.message.strip("'"))
@@ -35,7 +38,7 @@ class LanguageAnalyzer(Analyzer):
             output = BufferedWriter(filename='piechart.json', file_format='json')
         output.header('var labels = [')
         for language in self.languages:
-            data = "{ \"label\": \"%s\", \"value\": %s }" % (language, str(self.languages[language]))
+            data = {"label": language, "value": self.languages[language]}
             output.append(data)
         output.footer(']')
         if close:

@@ -21,6 +21,9 @@ class LengthAnalyzer(Analyzer):
         self.freq_mat = numpy.zeros((7, 24), int)
         self.avg_len_mat = numpy.zeros((7, 24), int)
 
+    def name(self):
+        return 'length'
+
     def analyze(self, comment):
         if not comment:
             return

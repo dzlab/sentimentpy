@@ -31,6 +31,9 @@ class SentimentAnalyzer(Analyzer):
         self.scores = self.freq_mat = numpy.zeros(20, int)
         self.watch = WatchTime()
 
+    def name(self):
+        return 'sentiment'
+
     def analyze(self, comment):
         self.watch.start()
         if not comment.language:

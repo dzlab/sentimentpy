@@ -84,13 +84,13 @@ class OptionsHandler:
         logger.info("Starting the analysis of stored comments")
         watch = WatchTime()
         watch.start()
+        db = MongoDb()
         # create an analysis manager and register the analyzers
-        analyzer = AnalyzerManager()
+        analyzer = AnalyzerManager(db=db)
         #analyzer.register(LengthAnalyzer())
         analyzer.register(LanguageAnalyzer())
         #analyzer.register(UserAnalyzer())
         #analyzer.register(SentimentAnalyzer())
-        db = MongoDb()
         comments = db.comments.find()
         i = 0
         for item in comments:

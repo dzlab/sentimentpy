@@ -44,8 +44,10 @@ class Writer:
         self.output.write(line)
 
     def append(self, data):
+        if not data or data is '':
+            return
         self.watch.start()
-        line = self.formatter.format(data)
+        line = self.formatter.format(str(data))
         self.output.write(line)
         self.watch.stop()
 
@@ -90,10 +92,10 @@ class BufferedWriter(Writer):
         self.append_to_buffer(line)
 
     def append(self, data):
-        if data is '':
+        if not data or data is '':
             return
         self.watch.start()
-        self.append_to_buffer(self.formatter.format(data))
+        self.append_to_buffer(self.formatter.format(str(data)))
         self.watch.stop()
 
     def footer(self, line):
@@ -112,21 +114,23 @@ class MongodbWriter:
     #output = None
     logger = logging.getLogger('MongodbWriter')
 
-    def __init__(self, mongodb):
+    def __init__(self, mongodb, collection):
         if not mongodb:
             raise Exception("Need mongodb connection client")
         self.output = mongodb.sentimentdb
+        self.collection = collection
+        if collection not in self.output.collection_names():
+            self.logger.debug("Cannot find collection '%s' not in database" % collection)
+            #output.[collection]. = []
         self.watch = WatchTime()
 
     def header(self, line):
         self.logger.info("Ignoring header %s" % line)
         pass
 
-    def append(self, collection, document):
+    def append(self, document):
         self.watch.start()
-        if collection not in self.output:
-            self.output[collection] = []
-        self.output[collection].insert(document)
+        self.output[self.collection].insert(document)
         self.watch.stop()
 
     def footer(self, line):
