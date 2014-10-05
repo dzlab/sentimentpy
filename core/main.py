@@ -86,9 +86,9 @@ class OptionsHandler:
         watch.start()
         # create an analysis manager and register the analyzers
         analyzer = AnalyzerManager()
-        #analyzer.register(LengthAnalyzer())
+        analyzer.register(LengthAnalyzer())
         analyzer.register(LanguageAnalyzer())
-        #analyzer.register(UserAnalyzer())
+        analyzer.register(UserAnalyzer())
         analyzer.register(SentimentAnalyzer())
         db = MongoDb()
         comments = db.comments.find()
@@ -135,7 +135,7 @@ class CommentsLoader:
 
 #e.g. python main.py -f /home/dzlab/Work/sentimentpy/data/6815841748_10152075477696749.txt
 if __name__ == '__main__':
-    sys.settrace(trace_calls)
+    #sys.settrace(trace_calls)
     logger = LoggerBuilder().log_to_file().log_to_console().build()
     OptionsHandler().handle_options()
 

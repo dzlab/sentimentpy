@@ -59,14 +59,15 @@ class ReaderTest(TestCase):
         eq_(comment.like_count, 0)
 
     def test_it_should_consume_fake_input_file(self):
+        reader = Reader()
         comment = Comment()
         comments_file = ReaderTest.FakeInput()
-        Reader.consume(comment, comments_file.readline())
-        Reader.consume(comment, comments_file.readline())
-        Reader.consume(comment, comments_file.readline())
-        Reader.consume(comment, comments_file.readline())
-        Reader.consume(comment, comments_file.readline())
-        Reader.consume(comment, comments_file.readline())
+        reader.consume(comment, comments_file.readline())
+        reader.consume(comment, comments_file.readline())
+        reader.consume(comment, comments_file.readline())
+        reader.consume(comment, comments_file.readline())
+        reader.consume(comment, comments_file.readline())
+        reader.consume(comment, comments_file.readline())
         # check the parsed comment's information
         eq_(comment.id, "10152075477696749_22524016")
         eq_(comment.user_id, "1067564503")
@@ -75,17 +76,18 @@ class ReaderTest(TestCase):
         eq_(comment.like_count, 3)
 
     def test_it_should_consume_comment(self):
+        reader = Reader()
         comment = Comment()
         line = "id:	10152075477696749_22523804"
-        Reader.consume(comment, line)
+        reader.consume(comment, line)
         line = "from:	[I fucking LOVE Chicago,	id:	691492767528100]"
-        Reader.consume(comment, line)
+        reader.consume(comment, line)
         line = "message:	'Good job Mr. President!'"
-        Reader.consume(comment, line)
+        reader.consume(comment, line)
         line = "created_time:	2014-01-16T21:04:23+0000"
-        Reader.consume(comment, line)
+        reader.consume(comment, line)
         line = "like_count:	3"
-        Reader.consume(comment, line)
+        reader.consume(comment, line)
         # check the parsed comment's information
         eq_(comment.id, "10152075477696749_22523804")
         eq_(comment.user_id, "691492767528100")
@@ -95,13 +97,14 @@ class ReaderTest(TestCase):
 
     def test_special_lines_from(self):
         """Test the result of parsing some lines starting with 'from'"""
+        reader = Reader()
         comment = Comment()
         line = "from:	[I’m Not Saying It Was Aliens But, It Was Aliens,	id:	255914607784724]"
-        Reader.consume(comment, line)
+        reader.consume(comment, line)
         eq_(comment.user_id, "255914607784724")
         eq_(comment.user_name, "I’m Not Saying It Was Aliens But, It Was Aliens")
         comment = Comment()
         line = "from:	[,	id:	]"
-        Reader.consume(comment, line)
+        reader.consume(comment, line)
         eq_(comment.user_id, None)
         eq_(comment.user_name, None)

@@ -1,5 +1,14 @@
-
+import threading
 from time import time
+from guess_language import guess_language
+
+
+guess_lock = threading.Lock()
+
+
+def guess_language_thread_safe(text):
+    with guess_lock:
+        return guess_language(text)
 
 
 class WatchTime:

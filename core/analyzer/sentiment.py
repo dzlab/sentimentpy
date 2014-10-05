@@ -3,9 +3,8 @@ __author__ = 'dzlab'
 
 from core.analyzer import Analyzer
 from core.cleaner import *
-from core.helper import WatchTime
+from core.helper import WatchTime, guess_language_thread_safe
 from core.inout.writer import BufferedWriter
-from guess_language import guess_language
 import logging
 import os
 import numpy
@@ -35,7 +34,7 @@ class SentimentAnalyzer(Analyzer):
     def analyze(self, comment):
         self.watch.start()
         if not comment.language:
-            comment.set_language(guess_language(comment.message))
+            comment.set_language(guess_language_thread_safe(comment.message))
         if not comment.language == 'en':
             return
         words = self.cleaner.clean(comment.message)

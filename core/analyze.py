@@ -21,7 +21,7 @@ class AnalyzerWorker(Thread):
             comment = self.comments_queue.get()
             self.analyzer.analyze(comment)
             self.comments_queue.task_done()
-            self.logger.debug('%d comments remaining to process by %s' % (self.comments_queue.qsize(), self.analyzer))
+            #self.logger.debug('%d comments remaining to process by %s' % (self.comments_queue.qsize(), self.analyzer))
 
     def finalize(self):
         self.analyzer.finalize()
