@@ -9,17 +9,40 @@ COMMENTS_FILE = '%s/../../output/' % os.path.dirname(os.path.realpath(__file__))
 
 
 class Formatter:
-    def __init__(self, file_format='csv'):
+    def __init__(self, file_format='txt'):
+        if file_format == 'csv':
+            self.separator = ','
+        elif file_format == 'tsv':
+            self.separator = '\t'
         self.first = True
         self.file_format = file_format
+        self.keys = []
 
-    def format(self, data):
-        if data is '':
+    def format_header(self, data):
+        if not data or data is '' or self.file_format == 'json':
             return data
-        formatted = data
-        if self.file_format == 'csv':
+        self.keys = data
+        formatted = ''
+        for key in self.keys:
+            formatted += self.separator + key
+        formatted = formatted.strip(self.separator)
+        formatted += '\n'
+        return formatted
+
+    def format_content(self, data):
+        if not data or data is '':
+            return data
+        formatted = ''
+        if self.file_format == 'txt':
+            formatted = str(data)
+            formatted += '\n'
+        elif self.file_format in ['csv', 'tsv']:
+            for key in self.keys:
+                formatted += self.separator + str(data[key])
+            formatted = formatted.strip(self.separator)
             formatted += '\n'
         elif self.file_format == 'json':
+            formatted = str(data)
             if self.first:
                 self.first = False
             else:
@@ -32,7 +55,7 @@ class Writer:
     #output = None
     logger = logging.getLogger('Writer')
 
-    def __init__(self, filename=None, file_format='csv'):
+    def __init__(self, filename=None, file_format='txt'):
         if not filename:
             filename = 'data.tsv'
         self.formatter = Formatter(file_format)
@@ -40,14 +63,14 @@ class Writer:
         self.watch = WatchTime()
 
     def header(self, header):
-        line = header + '\n'
+        line = self.formatter.format_header(header)
         self.output.write(line)
 
     def append(self, data):
         if not data or data is '':
             return
         self.watch.start()
-        line = self.formatter.format(str(data))
+        line = self.formatter.format_content(data)
         self.output.write(line)
         self.watch.stop()
 
@@ -66,7 +89,7 @@ class BufferedWriter(Writer):
     #buffer = ''
     filename = 'data.tsv'
 
-    def __init__(self, output=None, filename=None, block=100, file_format='csv'):
+    def __init__(self, output=None, filename=None, block=100, file_format='txt'):
         if output:
             self.output = output
         else:
@@ -88,14 +111,15 @@ class BufferedWriter(Writer):
             self.counter = 0
             self.buffer = ''
 
-    def header(self, line):
+    def header(self, header):
+        line = self.formatter.format_header(header)
         self.append_to_buffer(line)
 
     def append(self, data):
         if not data or data is '':
             return
         self.watch.start()
-        self.append_to_buffer(self.formatter.format(str(data)))
+        self.append_to_buffer(self.formatter.format_content(data))
         self.watch.stop()
 
     def footer(self, line):

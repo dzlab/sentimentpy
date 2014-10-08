@@ -51,7 +51,8 @@ class LengthAnalyzer(Analyzer):
         output.header('day' + '\t' + 'hour' + '\t' + 'value')
         for d in range(7):
             for h in range(24):
-                data = str(d+1) + '\t' + str(h+1) + '\t' + str(self.avg_len_mat[d][h])
+                #data = str(d+1) + '\t' + str(h+1) + '\t' + str(self.avg_len_mat[d][h])
+                data = {'day': d+1, 'hour': h+1, 'value': self.avg_len_mat[d][h]}
                 output.append(data)
       
         if close:

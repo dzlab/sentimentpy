@@ -33,25 +33,40 @@ class WriterTest(TestCase):
         writer.append("")
         eq_(writer.buffer, "", "The buffer should be empty as we appended an empty string")
         writer.append("hello world")
-        eq_(writer.buffer, "hello world\n", "The buffer should not be empty as the text was added")
+        eq_(writer.buffer, "hello world\n")
         writer.append("lorem ipsum dolor sit amet")
         eq_(writer.buffer, "hello world\nlorem ipsum dolor sit amet\n", "The buffer should contain old text and the newly added")
 
 
 class FormatterTest(TestCase):
 
+    def test_tsv_formatted_output(self):
+        formatter = Formatter(file_format='tsv')
+        FormatterTest.check_sv_formatted_output(formatter)
+
     def test_csv_formatted_output(self):
-        formatter = Formatter()
+        formatter = Formatter(file_format='csv')
+        FormatterTest.check_sv_formatted_output(formatter)
+
+    @staticmethod
+    def check_sv_formatted_output(formatter):
+        separator = formatter.separator
         data = ""
-        eq_(formatter.format(data), data, "The formatter should do nothing to empty data")
-        data = "a, b, c"
-        eq_(formatter.format(data), data + '\n', "The formatter should end the line for the next entry")
+        eq_(formatter.format_content(data), data, "The formatter should do nothing to empty data")
+        formatted_header = formatter.format_header(['a', 'b', 'c'])
+        eq_("a"+separator+"b"+separator+"c\n", formatted_header)
+        data = {'b': 1, 'c': 55, 'a': 'ok'}
+        formatted_content = formatter.format_content(data)
+        eq_("ok"+separator+"1"+separator+"55\n", formatted_content, "The formatter should end the line for the next entry")
 
     def test_json_formatted_output(self):
         formatter = Formatter('json')
         data = ""
-        eq_(formatter.format(data), data, "The formatter should do nothing to empty data")
+        formatted_content = formatter.format_content(data)
+        eq_(formatted_content, data, "The formatter should do nothing to empty data")
         data = "{'key': 'a', 'value': 2}"
-        eq_(formatter.format(data), data, "The formatter should add nothing as this is a first entry")
+        formatted_content = formatter.format_content(data)
+        eq_(formatted_content, data, "The formatter should add nothing as this is a first entry")
         data = "{'key': 'b', 'value': 56}"
-        eq_(formatter.format(data), "," + data, "The formatter should add ',' to separate this entry from previous one")
+        formatted_content = formatter.format_content(data)
+        eq_(formatted_content, "," + data, "The formatter should add ',' to separate this entry from previous one")

@@ -87,10 +87,10 @@ class OptionsHandler:
         db = MongoDb()
         # create an analysis manager and register the analyzers
         analyzer = AnalyzerManager(db=db)
-        #analyzer.register(LengthAnalyzer())
+        analyzer.register(LengthAnalyzer())
         analyzer.register(LanguageAnalyzer())
-        #analyzer.register(UserAnalyzer())
-        #analyzer.register(SentimentAnalyzer())
+        analyzer.register(UserAnalyzer())
+        analyzer.register(SentimentAnalyzer())
         comments = db.comments.find()
         i = 0
         for item in comments:
