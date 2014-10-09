@@ -38,7 +38,10 @@ class Formatter:
             formatted += '\n'
         elif self.file_format in ['csv', 'tsv']:
             for key in self.keys:
-                formatted += self.separator + str(data[key])
+                if key in data:
+                    formatted += self.separator + str(data[key])
+                else:
+                    formatted += self.separator + 'NA'
             formatted = formatted.strip(self.separator)
             formatted += '\n'
         elif self.file_format == 'json':

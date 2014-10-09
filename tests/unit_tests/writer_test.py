@@ -70,3 +70,16 @@ class FormatterTest(TestCase):
         data = "{'key': 'b', 'value': 56}"
         formatted_content = formatter.format_content(data)
         eq_(formatted_content, "," + data, "The formatter should add ',' to separate this entry from previous one")
+
+    def test_csv_formatted_file(self):
+        formatter = Formatter('csv')
+        keys = ['k1', 'k2', 'k3']
+        formatted_header = formatter.format_header(keys)
+        eq_(formatted_header, 'k1,k2,k3\n', "The formatted header should concatenate keys")
+        data = {'k1': 1, 'k2': '2', 'k3': 3.0}
+        formatted_content = formatter.format_content(data)
+        eq_(formatted_content, '1,2,3.0\n', "The formatter should concatenate values")
+        data = {'k1': 1, 'k3': 3.0}
+        formatted_content = formatter.format_content(data)
+        eq_(formatted_content, '1,NA,3.0\n', "Missing values should be replaced by 'NA'")
+
