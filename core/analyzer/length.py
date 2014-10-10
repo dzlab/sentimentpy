@@ -47,8 +47,8 @@ class LengthAnalyzer(Analyzer):
 
         # writing the result to data.tsv
         if not output:
-            output = BufferedWriter()
-        output.header('day' + '\t' + 'hour' + '\t' + 'value')
+            output = BufferedWriter(file_format='tsv')
+        output.header(['day', 'hour', 'value'])
         for d in range(7):
             for h in range(24):
                 #data = str(d+1) + '\t' + str(h+1) + '\t' + str(self.avg_len_mat[d][h])

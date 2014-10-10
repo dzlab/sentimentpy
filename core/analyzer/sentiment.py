@@ -61,10 +61,11 @@ class SentimentAnalyzer(Analyzer):
         # start a new watch
         self.watch.start()
         if not output:
-            output = BufferedWriter(filename='data.tsv')
-        output.header('range' + '\t' + 'frequency')
+            output = BufferedWriter(filename='data.tsv', file_format='tsv')
+        output.header(['range', 'frequency'])
         for i in range(0, len(self.scores)):
-            output.append(str(i-10) + '\t' + str(self.scores[i]))
+            data = {'range': i-10, 'frequency': self.scores[i]}
+            output.append(data)
         if close:
             output.close()
         self.watch.stop()

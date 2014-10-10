@@ -147,9 +147,9 @@ class UserAnalyzer(Analyzer):
         """Write the generated data into a file"""
         UserAnalyzer.logger.debug("Writing texts data to disk")
         writer = BufferedWriter(filename='messages.csv')
-        writer.header('user_id, user_name, texts')
+        writer.header(['user_id', 'user_name', 'texts'])
         for uid in self.texts_by_id:
             for language in self.texts_by_id[uid]:
-                line = uid + ', ' + self.names_by_id[uid] + ', ' + self.texts_by_id[uid][language].encode("utf-8")
-                writer.append(line)
+                data = {'user_id': uid, 'user_name': self.names_by_id[uid], 'texts': self.texts_by_id[uid][language].encode("utf-8")}
+                writer.append(data)
         writer.close()
